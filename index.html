@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pancode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: marca escura de linha única — hero com demo de WhatsApp ao vivo, depois "cardápio" de serviços e o processo "da massa ao forno" */
+:root{
+  --navy:#061B3E;        /* fundo da marca */
+  --navy-2:#0B2550;      /* superfície elevada */
+  --navy-3:#123063;      /* bordas / linhas */
+  --orange:#FD9104;      /* laranja da marca */
+  --orange-soft:#FFB84D; /* brilho do pão */
+  --crumb:#F3EADB;       /* texto principal, tom de miolo */
+  --muted:#9FB0CC;       /* texto secundário puxado pro azul */
+  --wa:#25D366;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Instrument Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:18px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--crumb);font:16px/1.6 var(--f-body);margin:0;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--orange);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1160px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+h1,h2,h3{font-family:var(--f-display);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+
+/* nav */
+header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--navy) 82%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid color-mix(in srgb,var(--navy-3) 70%,transparent)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:800 22px/1 var(--f-display);letter-spacing:-.03em}
+.brand svg{width:44px;height:30px;flex:none}
+.nav ul{display:flex;gap:26px;list-style:none;margin:0;padding:0;font-size:15px;color:var(--muted)}
+.nav ul a{text-decoration:none;transition:color .2s}
+.nav ul a:hover{color:var(--crumb)}
+.btn{display:inline-flex;align-items:center;gap:10px;font:600 15px/1 var(--f-body);text-decoration:none;border-radius:999px;padding:14px 22px;border:0;cursor:pointer;transition:transform .2s,background .2s,box-shadow .2s}
+.btn-o{background:var(--orange);color:var(--navy);box-shadow:0 8px 28px -10px var(--orange)}
+.btn-o:hover{transform:translateY(-2px);background:var(--orange-soft)}
+.btn-g{background:transparent;color:var(--crumb);box-shadow:inset 0 0 0 1.5px var(--navy-3)}
+.btn-g:hover{box-shadow:inset 0 0 0 1.5px var(--orange)}
+.nav .btn{padding:11px 18px;font-size:14px}
+
+.btn-wa{background:var(--wa);color:#05301A;box-shadow:0 8px 28px -12px var(--wa)}
+.btn-wa:hover{transform:translateY(-2px);background:#3BE07A}
+.wa-ic{width:20px;height:20px;flex:none}
+.wa-float{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:30;width:60px;height:60px;border-radius:50%;background:var(--wa);color:#05301A;display:grid;place-items:center;box-shadow:0 10px 30px -8px rgba(0,0,0,.6),0 0 0 6px color-mix(in srgb,var(--wa) 20%,transparent);text-decoration:none;transition:transform .2s}
+.wa-float:hover{transform:scale(1.07)}
+.wa-float .wa-ic{width:30px;height:30px}
+.wa-float::after{content:"Fale com a gente";position:absolute;right:72px;white-space:nowrap;background:var(--crumb);color:var(--navy);font:600 13px var(--f-body);padding:8px 12px;border-radius:10px;opacity:0;transform:translateX(6px);transition:.2s;pointer-events:none}
+.wa-float:hover::after{opacity:1;transform:none}
+/* landing anatomy */
+.lp{background:var(--navy);border:1px solid var(--navy-3);border-radius:16px;padding:18px;display:grid;gap:10px;min-width:0}
+.lp-row{display:flex;align-items:center;gap:12px;border:1px dashed var(--navy-3);border-radius:10px;padding:10px 12px;font:400 12.5px/1.35 var(--f-mono);color:var(--muted);min-width:0}
+.lp-row b{color:var(--orange);font-weight:500;flex:none;width:76px}
+.lp-row span{min-width:0}
+.lp-row.cta{border-style:solid;border-color:var(--orange);background:color-mix(in srgb,var(--orange) 12%,transparent);color:var(--crumb)}
+.lp-meta{display:flex;flex-wrap:wrap;gap:18px;font:500 12px var(--f-mono);color:var(--muted);padding-top:4px}
+.lp-meta strong{color:var(--crumb)}
+/* email */
+.mail{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:28px;background:var(--navy);color:var(--crumb);border-radius:16px;padding:14px 14px 14px 18px;max-width:30em}
+.mail svg{width:22px;height:22px;color:var(--orange);flex:none}
+.mail .addr{font:500 16px var(--f-mono);flex:1;min-width:0;overflow-wrap:anywhere;user-select:all}
+.mail button{font:600 13px var(--f-body);background:var(--orange);color:var(--navy);border:0;border-radius:10px;padding:9px 14px;cursor:pointer}
+.oven .btn-wa{margin-top:14px}
+/* hero */
+.hero{position:relative;padding-block:clamp(48px,8vw,96px) clamp(56px,8vw,104px)}
+.hero::before{content:"";position:absolute;inset:-10% -20% auto auto;width:720px;height:720px;max-width:100%;background:radial-gradient(closest-side,color-mix(in srgb,var(--orange) 22%,transparent),transparent);pointer-events:none}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(32px,5vw,64px);align-items:center}
+.hero h1{font-size:clamp(44px,7.2vw,92px);font-weight:800;margin-top:18px}
+.hero h1 em{font-style:normal;color:var(--orange);position:relative;white-space:nowrap}
+.hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:.06em;height:.09em;background:var(--orange);border-radius:4px;opacity:.45}
+.hero p.lead{font-size:clamp(17px,1.6vw,20px);color:var(--muted);max-width:34em;margin:24px 0 32px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px}
+.hero .proof{display:flex;flex-wrap:wrap;gap:28px;margin-top:44px;padding-top:24px;border-top:1px solid var(--navy-3)}
+.proof div{display:grid;gap:2px}
+.proof strong{font:700 28px/1 var(--f-display);color:var(--crumb);font-variant-numeric:tabular-nums}
+.proof span{font-size:13px;color:var(--muted)}
+
+/* phone demo */
+.phone{justify-self:center;width:100%;max-width:340px;background:#0A1E40;border-radius:36px;padding:10px;box-shadow:0 0 0 1.5px var(--navy-3),0 40px 80px -30px #000,0 0 120px -40px var(--orange);transform:rotate(2.5deg)}
+.screen{background:#0D1A2E;border-radius:28px;overflow:hidden}
+.chat-head{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#13253F}
+.chat-head .av{width:34px;height:34px;border-radius:50%;background:var(--orange);display:grid;place-items:center}
+.chat-head .av svg{width:26px;height:18px}
+.chat-head strong{font-size:14px;display:block}
+.chat-head small{font-size:11.5px;color:var(--wa)}
+.chat{height:380px;padding:16px 12px;display:flex;flex-direction:column;gap:8px;overflow:hidden;background:radial-gradient(circle at 20% 10%,#11233b,transparent 60%),#0D1A2E}
+.msg{max-width:82%;padding:8px 11px 6px;border-radius:12px;font-size:13.5px;line-height:1.4;animation:pop .35s ease both}
+.msg time{display:block;text-align:right;font:400 10px var(--f-mono);opacity:.55;margin-top:2px}
+.msg.in{align-self:flex-start;background:#1C2E47;border-top-left-radius:3px}
+.msg.out{align-self:flex-end;background:#0F5C47;border-top-right-radius:3px}
+.msg.bot{align-self:flex-start;background:#1C2E47;border-left:3px solid var(--orange);border-top-left-radius:3px}
+.msg .opts{display:grid;gap:4px;margin-top:6px}
+.msg .opts span{display:block;background:#243957;border-radius:8px;padding:5px 8px;font-size:12.5px;color:var(--orange-soft)}
+.typing{align-self:flex-start;background:#1C2E47;border-radius:12px;padding:10px 12px;display:flex;gap:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes pop{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+.phone-cap{font:400 12px var(--f-mono);color:var(--muted);text-align:center;margin-top:14px}
+
+/* ticker */
+.ticker{border-block:1px solid var(--navy-3);background:var(--navy-2);overflow:hidden}
+.ticker .track{display:flex;gap:48px;padding-block:16px;width:max-content;animation:slide 38s linear infinite;font:500 14px var(--f-mono);color:var(--muted);white-space:nowrap}
+.ticker .track span::before{content:"✦";color:var(--orange);margin-right:48px}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* sections */
+section.block{padding-block:clamp(72px,10vw,128px)}
+.sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:24px;margin-bottom:48px}
+.sec-head h2{font-size:clamp(34px,4.8vw,60px);font-weight:800;margin-top:14px;max-width:14em}
+.sec-head p{color:var(--muted);max-width:28em;margin:0}
+
+/* cardápio */
+.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.item{position:relative;background:var(--navy-2);border:1px solid var(--navy-3);border-radius:var(--r);padding:30px;display:flex;flex-direction:column;gap:14px;min-width:0;transition:border-color .25s,transform .25s}
+.item:hover{border-color:color-mix(in srgb,var(--orange) 60%,var(--navy-3));transform:translateY(-3px)}
+.item .top{display:flex;justify-content:space-between;align-items:start;gap:12px}
+.item .ic{width:52px;height:52px;border-radius:14px;background:color-mix(in srgb,var(--orange) 14%,transparent);color:var(--orange);display:grid;place-items:center}
+.item .ic svg{width:26px;height:26px}
+.item .tag{font:500 11px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--navy-3);border-radius:999px;padding:7px 10px}
+.item h3{font-size:28px;font-weight:700}
+.item p{color:var(--muted);margin:0}
+.item ul{list-style:none;padding:0;margin:4px 0 0;display:flex;flex-wrap:wrap;gap:8px}
+.item li{font-size:13px;background:var(--navy);border-radius:8px;padding:6px 10px;color:var(--crumb)}
+.item.feat{grid-column:1/-1;background:linear-gradient(120deg,color-mix(in srgb,var(--orange) 16%,var(--navy-2)),var(--navy-2) 55%);border-color:color-mix(in srgb,var(--orange) 45%,var(--navy-3));display:grid;grid-template-columns:1.2fr 1fr;gap:32px;align-items:center}
+.item.feat .tag{color:var(--navy);background:var(--orange);border-color:var(--orange)}
+.flow{display:grid;gap:10px;font:400 13px/1.4 var(--f-mono);min-width:0}
+.flow div{display:flex;align-items:center;gap:12px;background:var(--navy);border:1px solid var(--navy-3);border-radius:12px;padding:12px 14px;min-width:0}
+.flow b{color:var(--orange);font-weight:500;flex:none;width:22px}
+.flow span{min-width:0;overflow-wrap:anywhere}
+
+/* processo */
+.process{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;counter-reset:s;border-top:1px solid var(--navy-3)}
+.step{padding:28px 24px 8px 0;position:relative}
+.step::before{content:"";position:absolute;top:-6px;left:0;width:11px;height:11px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 5px var(--navy),0 0 0 6px var(--navy-3)}
+.step .when{font:500 12px var(--f-mono);color:var(--orange);letter-spacing:.06em}
+.step h3{font-size:24px;font-weight:700;margin:10px 0 8px}
+.step p{color:var(--muted);margin:0;font-size:15px}
+
+/* stack */
+.stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:56px}
+.stack span{font:500 13px var(--f-mono);padding:9px 14px;border-radius:10px;border:1px solid var(--navy-3);color:var(--muted)}
+
+/* depoimentos-like: cases */
+.cases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.case{border-radius:var(--r);overflow:hidden;background:var(--navy-2);border:1px solid var(--navy-3);display:flex;flex-direction:column;min-width:0}
+.case .shot{aspect-ratio:16/10;max-width:100%;padding:16px;display:flex;flex-direction:column;gap:8px;background:linear-gradient(160deg,var(--navy-3),var(--navy))}
+.case .shot .bar{display:flex;gap:5px}
+.case .shot .bar i{width:8px;height:8px;border-radius:50%;background:var(--navy-2)}
+.case .shot .ln{height:9px;border-radius:5px;background:color-mix(in srgb,var(--crumb) 12%,transparent)}
+.case .shot .ln.o{background:var(--orange);width:42%}
+.case .shot .grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.case .shot .grid i{border-radius:8px;background:color-mix(in srgb,var(--crumb) 7%,transparent)}
+.case .shot .grid i:first-child{background:color-mix(in srgb,var(--orange) 30%,transparent)}
+.case .body{padding:22px;display:grid;gap:8px}
+.case .kind{font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--orange)}
+.case h3{font-size:21px;font-weight:700}
+.case p{margin:0;color:var(--muted);font-size:14.5px}
+.case .res{font:700 15px var(--f-display);color:var(--crumb)}
+.note{font:400 12px var(--f-mono);color:var(--muted);margin-top:18px}
+
+/* CTA / contato */
+.oven{background:var(--orange);color:var(--navy);border-radius:28px;padding:clamp(32px,6vw,72px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,64px);position:relative;overflow:hidden}
+.oven::after{content:"";position:absolute;right:-80px;bottom:-120px;width:420px;height:280px;border:22px solid color-mix(in srgb,var(--navy) 12%,transparent);border-radius:50%;transform:rotate(-28deg);pointer-events:none}
+.oven .eyebrow{color:var(--navy)}
+.oven h2{font-size:clamp(36px,5vw,64px);font-weight:800;margin:14px 0 18px}
+.oven p{margin:0;font-size:17px;max-width:26em}
+.contact-lines{display:grid;gap:8px;margin-top:28px;font:500 15px var(--f-mono)}
+form{position:relative;z-index:1;display:grid;gap:12px;align-content:start}
+label{font:600 13px var(--f-body);display:grid;gap:6px}
+input,select,textarea{font:400 15px var(--f-body);color:var(--crumb);background:var(--navy);border:1.5px solid transparent;border-radius:12px;padding:13px 14px;width:100%;color-scheme:dark}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--crumb)}
+textarea{resize:vertical;min-height:96px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+form .btn{background:var(--navy);color:var(--crumb);justify-content:center;padding:16px}
+form .btn:hover{transform:translateY(-2px);background:#0d2a5a}
+.formnote{font-size:13px;min-height:1.4em;margin:0}
+
+footer{padding-block:48px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px}
+
+@media (max-width:900px){
+  .hero .wrap,.item.feat,.oven{grid-template-columns:1fr}
+  .phone{transform:none}
+  .process{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}
+  .cases{grid-template-columns:1fr}
+  .nav ul{display:none}
+}
+@media (max-width:640px){
+  .menu{grid-template-columns:1fr}
+  .process{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .nav .btn span{display:none}
+  .hero h1 em{white-space:normal}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="bread" viewBox="0 0 120 80">
+      <g transform="rotate(-24 60 40)">
+        <rect x="4" y="18" width="112" height="44" rx="22" fill="none" stroke="#FD9104" stroke-width="2.2"/>
+        <rect x="10" y="23" width="100" height="34" rx="17" fill="#FD9104"/>
+        <path d="M30 28 q8 -4 16 4 M52 26 q8 -4 16 4 M74 26 q8 -4 16 4" fill="none" stroke="#061B3E" stroke-width="3.2" stroke-linecap="round"/>
+        <circle cx="34" cy="46" r="1.6" fill="#061B3E"/><circle cx="58" cy="42" r="1.6" fill="#061B3E"/>
+        <circle cx="80" cy="47" r="1.6" fill="#061B3E"/><circle cx="96" cy="39" r="1.6" fill="#061B3E"/>
+        <circle cx="46" cy="50" r="1.2" fill="#061B3E"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#topo" aria-label="Pancode, início">
+      <svg><use href="#bread"/></svg>Pancode
+    </a>
+    <nav aria-label="Principal">
+      <ul>
+        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#processo">Como trabalhamos</a></li>
+        <li><a href="#projetos">Projetos</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-wa" href="https://wa.me/5500000000000" target="_blank" rel="noopener"><svg class="wa-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8.6 8.6 0 0 0-7.4 13l-1.1 4 4.1-1.1A8.6 8.6 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.6 9.2c.2 2.6 3.6 6 6.2 6.2l1.1-1.3-1.6-1-1 .7c-.9-.4-1.9-1.4-2.3-2.3l.7-1-1-1.6-1.3 1.1Z" fill="currentColor"/></svg><span>Chamar no WhatsApp</span></a>
+  </div>
+</header>
+
+<main id="topo">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Landing pages · Sites · Sistemas · WhatsApp</span>
+        <h1>Tecnologia <em>quentinha</em>, saindo do forno pro seu negócio.</h1>
+        <p class="lead">A Pancode cria landing pages que convertem, sites que vendem, sistemas sob medida e robôs de WhatsApp que atendem seus clientes 24 horas. Receita própria, ingredientes de primeira e entrega no prazo.</p>
+        <div class="ctas">
+          <a class="btn btn-o" href="#contato">Quero um orçamento →</a>
+          <a class="btn btn-wa" href="https://wa.me/5500000000000" target="_blank" rel="noopener"><svg class="wa-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8.6 8.6 0 0 0-7.4 13l-1.1 4 4.1-1.1A8.6 8.6 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.6 9.2c.2 2.6 3.6 6 6.2 6.2l1.1-1.3-1.6-1-1 .7c-.9-.4-1.9-1.4-2.3-2.3l.7-1-1-1.6-1.3 1.1Z" fill="currentColor"/></svg>Chamar no WhatsApp</a>
+        </div>
+        <div class="proof">
+          <div><strong>+120</strong><span>projetos entregues</span></div>
+          <div><strong>24/7</strong><span>atendimento automatizado</span></div>
+          <div><strong>7 dias</strong><span>pra sua landing page no ar</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="phone" role="img" aria-label="Exemplo de conversa com um robô de atendimento no WhatsApp">
+          <div class="screen">
+            <div class="chat-head">
+              <div class="av"><svg><use href="#bread"/></svg></div>
+              <div><strong>Padaria Bom Grão</strong><small>● online · robô Pancode</small></div>
+            </div>
+            <div class="chat" id="chat"></div>
+          </div>
+        </div>
+        <p class="phone-cap">exemplo real de fluxo · roda sozinho, sem atendente</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="track">
+      <span>Landing pages que convertem</span><span>Lojas virtuais</span><span>Chatbots no WhatsApp</span><span>Painéis administrativos</span><span>Agendamento online</span><span>Integração com APIs</span><span>Disparo de mensagens</span><span>CRM sob medida</span><span>IA no atendimento</span>
+      <span>Landing pages que convertem</span><span>Lojas virtuais</span><span>Chatbots no WhatsApp</span><span>Painéis administrativos</span><span>Agendamento online</span><span>Integração com APIs</span><span>Disparo de mensagens</span><span>CRM sob medida</span><span>IA no atendimento</span>
+    </div>
+  </div>
+
+  <section class="block" id="servicos">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">O cardápio</span>
+          <h2>Tudo o que sua empresa precisa pra vender mais online.</h2>
+        </div>
+        <p>Do primeiro site ao sistema que organiza a operação inteira. Escolha um item ou monte a combinação ideal.</p>
+      </div>
+
+      <div class="menu">
+        <article class="item feat">
+          <div style="display:grid;gap:14px;min-width:0">
+            <div class="top">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.6-5.4A8.4 8.4 0 1 1 21 11.5Z"/><path d="M8.5 10.5h7M8.5 13.5h4.5"/></svg></div>
+              <span class="tag">Mais pedido</span>
+            </div>
+            <h3>Automação no WhatsApp</h3>
+            <p>Um robô que responde na hora, mostra produtos, tira pedidos, agenda horários e só chama um humano quando precisa. Seu WhatsApp vira um vendedor que nunca dorme.</p>
+            <ul><li>Chatbot com menu</li><li>IA que entende texto livre</li><li>Disparos em massa</li><li>Integração com planilha e CRM</li></ul>
+          </div>
+          <div class="flow" aria-label="Exemplo de fluxo">
+            <div><b>01</b><span>Cliente manda "oi" às 23h47</span></div>
+            <div><b>02</b><span>Robô responde em 2s com o cardápio</span></div>
+            <div><b>03</b><span>Pedido registrado no seu painel</span></div>
+            <div><b>04</b><span>Pix gerado e confirmação enviada</span></div>
+          </div>
+        </article>
+
+        <article class="item feat">
+          <div style="display:grid;gap:14px;min-width:0">
+            <div class="top">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M3 9h18M7 13h10M9 16.5h6"/></svg></div>
+              <span class="tag">Destaque</span>
+            </div>
+            <h3>Landing pages que convertem</h3>
+            <p>Uma página feita pra uma coisa só: transformar visitante em cliente. Copy persuasiva, carregamento instantâneo e botão de WhatsApp em cada dobra. Ideal pra campanhas no Instagram, Google Ads e lançamentos.</p>
+            <ul><li>Copy de vendas</li><li>Pronta pra tráfego pago</li><li>Pixel Meta e Google</li><li>Teste A/B</li><li>Sites institucionais</li><li>Lojas virtuais</li></ul>
+          </div>
+          <div class="lp" aria-label="Anatomia de uma landing page Pancode">
+            <div class="lp-row"><b>Headline</b><span>A promessa clara em 1 frase</span></div>
+            <div class="lp-row"><b>Prova</b><span>Depoimentos, números e logos de clientes</span></div>
+            <div class="lp-row"><b>Oferta</b><span>Benefícios, preço e garantia</span></div>
+            <div class="lp-row cta"><b>CTA</b><span>Chamar no WhatsApp com mensagem pronta</span></div>
+            <div class="lp-meta"><span>carrega em <strong>&lt;1s</strong></span><span>nota <strong>95+</strong> no PageSpeed</span><span>no ar em <strong>7 dias</strong></span></div>
+          </div>
+        </article>
+
+        <article class="item">
+          <div class="top">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></div>
+            <span class="tag">Sistemas</span>
+          </div>
+          <h3>Sistemas sob medida</h3>
+          <p>Painéis, controle de estoque, agendamentos, área do cliente. Do jeito que a sua operação funciona.</p>
+          <ul><li>Painel admin</li><li>Dashboards</li><li>App web</li><li>Multiusuário</li></ul>
+        </article>
+
+        <article class="item">
+          <div class="top">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7 3 12l5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></div>
+            <span class="tag">Integrações</span>
+          </div>
+          <h3>Integrações e APIs</h3>
+          <p>Conectamos o que você já usa: gateway de pagamento, ERP, Google Sheets, e-mail e redes sociais.</p>
+          <ul><li>Pix e cartão</li><li>Webhooks</li><li>Planilhas</li><li>ERPs</li></ul>
+        </article>
+
+        <article class="item">
+          <div class="top">
+            <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3.2"/></svg></div>
+            <span class="tag">Suporte</span>
+          </div>
+          <h3>Hospedagem e manutenção</h3>
+          <p>Seu projeto no ar, seguro e atualizado. Cuidamos do servidor, dos backups e das melhorias.</p>
+          <ul><li>Domínio e SSL</li><li>Backups</li><li>Monitoramento</li><li>Ajustes mensais</li></ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="processo" style="background:var(--navy-2);border-block:1px solid var(--navy-3)">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">Da massa ao forno</span>
+          <h2>Como seu projeto ganha forma.</h2>
+        </div>
+        <p>Um processo simples e transparente. Você acompanha cada etapa e aprova antes de seguir.</p>
+      </div>
+      <div class="process">
+        <div class="step"><span class="when">ETAPA 1 · DIA 1</span><h3>Conversa</h3><p>Entendemos seu negócio, seus clientes e o que precisa ser resolvido.</p></div>
+        <div class="step"><span class="when">ETAPA 2 · DIAS 2–3</span><h3>Receita</h3><p>Proposta com escopo, layout e prazo fechados. Sem surpresa no fim.</p></div>
+        <div class="step"><span class="when">ETAPA 3 · SEMANAS 1–4</span><h3>Forno</h3><p>Desenvolvimento com entregas parciais pra você testar e dar retorno.</p></div>
+        <div class="step"><span class="when">ETAPA 4 · ENTREGA</span><h3>Servido</h3><p>Projeto no ar, treinamento da equipe e suporte depois do lançamento.</p></div>
+      </div>
+      <div class="stack" aria-label="Tecnologias que usamos">
+        <span>React</span><span>Next.js</span><span>Node.js</span><span>Python</span><span>PostgreSQL</span><span>WhatsApp Cloud API</span><span>n8n</span><span>OpenAI</span><span>Vercel</span><span>Tailwind</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="projetos">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <span class="eyebrow">Fornadas recentes</span>
+          <h2>Projetos que já estão rodando.</h2>
+        </div>
+        <p>Alguns exemplos do tipo de resultado que entregamos.</p>
+      </div>
+      <div class="cases">
+        <article class="case">
+          <div class="shot"><div class="bar"><i></i><i></i><i></i></div><div class="ln o"></div><div class="ln" style="width:70%"></div><div class="grid"><i></i><i></i><i></i></div></div>
+          <div class="body"><span class="kind">Automação · WhatsApp</span><h3>Clínica de estética</h3><p>Agendamento e lembretes automáticos pelo WhatsApp, integrados à agenda da equipe.</p><span class="res">−60% de faltas</span></div>
+        </article>
+        <article class="case">
+          <div class="shot"><div class="bar"><i></i><i></i><i></i></div><div class="ln" style="width:55%"></div><div class="ln o" style="width:30%"></div><div class="grid"><i></i><i></i><i></i></div></div>
+          <div class="body"><span class="kind">Sistema · Painel</span><h3>Distribuidora de bebidas</h3><p>Painel de pedidos e estoque com acesso para vendedores externos pelo celular.</p><span class="res">3h a menos por dia</span></div>
+        </article>
+        <article class="case">
+          <div class="shot"><div class="bar"><i></i><i></i><i></i></div><div class="ln o" style="width:60%"></div><div class="ln" style="width:40%"></div><div class="grid"><i></i><i></i><i></i></div></div>
+          <div class="body"><span class="kind">Site · Landing page</span><h3>Escritório de advocacia</h3><p>Site institucional com captação de leads direto pro WhatsApp do escritório.</p><span class="res">4× mais contatos</span></div>
+        </article>
+      </div>
+      <p class="note">* projetos e números ilustrativos, substitua pelos cases reais da Pancode.</p>
+    </div>
+  </section>
+
+  <section class="block" id="contato" style="padding-top:0">
+    <div class="wrap">
+      <div class="oven">
+        <div>
+          <span class="eyebrow">Peça o seu</span>
+          <h2>Bora tirar sua ideia do forno?</h2>
+          <p>Conta pra gente o que você precisa. Respondemos no mesmo dia útil com uma proposta inicial, sem compromisso.</p>
+          <a class="btn btn-wa" href="https://wa.me/5500000000000" target="_blank" rel="noopener"><svg class="wa-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8.6 8.6 0 0 0-7.4 13l-1.1 4 4.1-1.1A8.6 8.6 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.6 9.2c.2 2.6 3.6 6 6.2 6.2l1.1-1.3-1.6-1-1 .7c-.9-.4-1.9-1.4-2.3-2.3l.7-1-1-1.6-1.3 1.1Z" fill="currentColor"/></svg>Chamar no WhatsApp · (00) 00000-0000</a>
+          <div class="mail">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>
+            <span class="addr" id="mail-addr">contato@pancode.com.br</span>
+            <button type="button" id="copy-mail">Copiar e-mail</button>
+          </div>
+        </div>
+        <form id="lead" novalidate>
+          <div class="row2">
+            <label for="f-nome">Seu nome<input id="f-nome" name="nome" placeholder="Maria Souza" required></label>
+            <label for="f-emp">Empresa<input id="f-emp" name="empresa" placeholder="Bom Grão Padaria"></label>
+          </div>
+          <label for="f-tipo">O que você precisa?
+            <select id="f-tipo" name="tipo">
+              <option>Landing page</option>
+              <option>Automação no WhatsApp</option>
+              <option>Site institucional ou loja</option>
+              <option>Sistema sob medida</option>
+              <option>Integração / API</option>
+              <option>Ainda não sei, quero conversar</option>
+            </select>
+          </label>
+          <label for="f-msg">Conta um pouco do projeto<textarea id="f-msg" name="msg" placeholder="Quero um robô que tire pedidos pelo WhatsApp e mande pro meu painel…"></textarea></label>
+          <button class="btn" type="submit">Montar mensagem pro WhatsApp →</button>
+          <p class="formnote" id="formnote" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#topo" style="font-size:18px"><svg style="width:36px;height:24px"><use href="#bread"/></svg>Pancode</a>
+    <span>contato@pancode.com.br · (00) 00000-0000</span>
+    <span>© 2026 Pancode Tecnologia · Feito com código e café</span>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/5500000000000" target="_blank" rel="noopener" aria-label="Chamar no WhatsApp"><svg class="wa-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8.6 8.6 0 0 0-7.4 13l-1.1 4 4.1-1.1A8.6 8.6 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.6 9.2c.2 2.6 3.6 6 6.2 6.2l1.1-1.3-1.6-1-1 .7c-.9-.4-1.9-1.4-2.3-2.3l.7-1-1-1.6-1.3 1.1Z" fill="currentColor"/></svg></a>
+
+<script>
+(function(){
+  const chat=document.getElementById('chat');
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const script=[
+    ['in','Oi! Vocês entregam hoje?','23:47'],
+    ['bot','Olá! 👋 Sou o assistente da Bom Grão. Entregamos sim, até meia-noite. O que deseja?<div class="opts"><span>1 · Ver cardápio</span><span>2 · Fazer pedido</span><span>3 · Falar com atendente</span></div>','23:47'],
+    ['in','2','23:48'],
+    ['bot','Perfeito! Me diz o pedido que eu já calculo o total 🥖','23:48'],
+    ['in','10 pães franceses e 1 bolo de rolo','23:48'],
+    ['bot','Anotado ✅<br>10× pão francês — R$ 8,00<br>1× bolo de rolo — R$ 32,00<br><b>Total: R$ 40,00</b><br>Gerei seu Pix, é só copiar e colar.','23:49'],
+    ['out','Pago! 🙌','23:50'],
+    ['bot','Pagamento confirmado. Chega em ~25 min. Obrigado! 🧡','23:50']
+  ];
+  function add(m){
+    const d=document.createElement('div');
+    d.className='msg '+m[0];
+    d.innerHTML=m[1]+'<time>'+m[2]+'</time>';
+    chat.appendChild(d);
+    while(chat.scrollHeight>chat.clientHeight && chat.children.length>1) chat.removeChild(chat.firstElementChild);
+  }
+  let i=2;
+  if(reduce){ script.slice(-4).forEach(add); } else { script.slice(0,2).forEach(add); setTimeout(next,1400); }
+  function next(){
+    if(i>=script.length){ setTimeout(()=>{chat.innerHTML='';i=0;next();},3200); return; }
+    const m=script[i];
+    if(m[0]==='bot'){
+      const t=document.createElement('div');t.className='typing';t.innerHTML='<i></i><i></i><i></i>';
+      chat.appendChild(t);
+      setTimeout(()=>{t.remove();add(m);i++;setTimeout(next,1500);},900);
+    } else { add(m); i++; setTimeout(next,1100); }
+  }
+
+  const cb=document.getElementById('copy-mail');
+  cb.addEventListener('click',()=>{
+    const t=document.getElementById('mail-addr').textContent;
+    const done=()=>{cb.textContent='Copiado ✓';setTimeout(()=>cb.textContent='Copiar e-mail',1800);};
+    const sel=()=>{const r=document.createRange();r.selectNodeContents(document.getElementById('mail-addr'));const s=getSelection();s.removeAllRanges();s.addRange(r);cb.textContent='Selecionado, é só copiar';};
+    try{navigator.clipboard.writeText(t).then(done,sel);}catch(e){sel();}
+  });
+  // formulário -> link do WhatsApp
+  const form=document.getElementById('lead'), note=document.getElementById('formnote');
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const nome=form.nome.value.trim();
+    if(!nome){ note.textContent='Coloque seu nome pra gente saber com quem fala.'; form.nome.focus(); return; }
+    const txt=`Olá, Pancode! Sou ${nome}${form.empresa.value.trim()?' da '+form.empresa.value.trim():''}. Preciso de: ${form.tipo.value}. ${form.msg.value.trim()}`;
+    const url='https://wa.me/5500000000000?text='+encodeURIComponent(txt);
+    note.innerHTML='Mensagem pronta. <a href="'+url+'" target="_blank" rel="noopener" style="font-weight:700">Abrir no WhatsApp →</a>';
+  });
+})();
+</script>
+
+</body>
+</html>
